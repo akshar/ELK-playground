@@ -57,3 +57,25 @@ GET /courses/_search
 		}
 }
 ```
+
+
+* combining AND and NOT query( should be wrapped with bool query)
+* must match computer and not include room c12
+
+```
+GET /courses/_search
+{
+	"query": {
+		"bool": {
+			"must": [
+				{"match": {"name": "computer"}}
+			],
+			"must_not": [
+				{"match": {"room": "c8"}}
+			]
+		}
+	}
+}
+```
+
+[bool query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html)
