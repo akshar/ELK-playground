@@ -54,6 +54,7 @@ GET vehicles/cars/_search
                         "field": "price"
                     }
                 },
+
                 "max_price": {
                     "max": {
                         "field": "price"
@@ -83,4 +84,84 @@ will give :
             ]
 ```
 
+OR use *stats*
 
+GET /vehicles/cars/_search
+{
+    "aggs": {
+        "popular_cars": {
+            "terms": {
+                "field": "make.keyword"
+            },
+            "aggs": {
+                "car_stats": {
+                    "stats": {
+                        "field": "price"
+                    } 
+                }
+            }
+        }
+    }
+}
+
+* We are creating a bucket named *popular_cars* (1st aggs) and generating mertrices (2nd aggs query)
+
+
+* Date range bucket:
+```
+GET /vehicles/cars/_search
+{
+    "aggs": {
+        "popular_cars": {
+            "terms": {
+                "field": "make.keyword"
+            },
+            "aggs": {
+                "sold_date_range": {
+                    "range": {
+                        "field": "sold",
+                        "ranges": [
+                            {"from": "2016-01-01",
+                            "to": "2016-05-18" },
+                            {"from": "2016-05-18",
+                            "to": "2017-01-01" }
+                        ]
+                    },
+                    "aggs": {
+                        "avg_price": {
+                            "avg" : {
+                                "field": "price"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+popular_cars bucket => sold_date_range bucket = aggregate by date range + calcuate avg price for both date range
+
+
+GET /vehicles/cars/_search
+{
+    "aggs": {
+        "car_condition": {
+            "terms": {
+                "field": "condition.keyword"
+           },
+           "aggs": {
+               "average_price": {
+                   "avg": {
+                       "field": "price"
+                   }
+               },
+               "make": {
+                   "terms": {
+                       "field": "make.keyword"
+                   }
+               }
+           }
+        }
+    }
+}
