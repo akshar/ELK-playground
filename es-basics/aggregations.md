@@ -159,6 +159,13 @@ GET /vehicles/cars/_search
                "make": {
                    "terms": {
                        "field": "make.keyword"
+                   },
+                   "aggs": {
+                       "min_max_stats": {
+                           "stats": {
+                               "field": "price"
+                           }
+                       } 
                    }
                }
            }
